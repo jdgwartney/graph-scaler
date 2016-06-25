@@ -59,45 +59,44 @@ seed()
 # Generate normally distributed array of random number.
 # Each member in the array represents a single minute of data
 # received by the Pulse API
-min_data = {} 
+minute_data = {} 
 for i in range(1,61):
-    min_data[i] = np.random.normal(loc=0.0, scale=1.0, size=randrange(1, 10))
-    # print(min_data[i])
+    minute_data[i] = np.random.normal(loc=0.0, scale=1.0, size=randrange(1, 10))
 
 # Compute the means of each of the minute arrays
-min_mean = {}
-for key in min_data:
+minute_mean = {}
+for key in minute_data:
    # calculate the mean for this minute of data
-   min_mean[key] = np.mean(min_data[key])
-   # print(min_mean[key])
+   minute_mean[key] = np.mean(minute_data[key])
 
-for key in min_data:
-    d = min_data[key]
-#    print("minute {0}: {1} points, mean: {2}, min: {3}, max: {4}".format(
-#	    key, len(d), np.mean(d), np.min(d), np.max(d)))
+print("+++++ Minute Data Statistics +++++")
+for key in minute_data:
+    d = minute_data[key]
+    print("minute {0}: {1} points, mean: {2}, median: {3}, min: {4}, max: {5}".format(
+	    key, len(d), np.mean(d), np.median(d), np.min(d), np.max(d)))
+print("----------------------------------")
+print("")
 
 # Compute the hourly mean from the minute means
-values = [v for v in min_mean.values()]
-hour_min = np.min(values)
-hour_max = np.max(values)
+minute_mean_data = [v for v in minute_mean.values()]
+hour_min = np.min(minute_mean_data)
+hour_max = np.max(minute_mean_data)
 hour_range = hour_max - hour_min
-hour_mean = np.mean(values)
-# print("hour_mean: {0}, hour_min: {1}, hour_max: {2}, hour_range: {3}".format(
-#	hour_mean, hour_min, hour_max, hour_range))
+hour_mean = np.mean(minute_mean_data)
+hour_median = np.mean(minute_mean_data)
+print("hour_mean: {0}, hour_median: {1}, hour_min: {2}, hour_max: {3}, hour_range: {4}".format(
+	hour_median, hour_mean, hour_min, hour_max, hour_range))
 
 # Collect all the minute data into an hourly array
 hour_data = np.array([])
-for key in min_data:
-     hour_data = np.append(hour_data, min_data[key])
+for key in minute_data:
+     hour_data = np.append(hour_data, minute_data[key])
 
 total_min = np.min(hour_data)
 total_max = np.max(hour_data)
 total_range = total_max - total_min
 total_mean = np.mean(hour_data)
-# print("total range: {0}".format(total_range))
-# print("total_min: {0}".format(total_min))
-# print("total_max: {0}".format(total_max))
-# print("total_mean: {0}".format(total_mean))
+total_median = np.median(hour_data)
 
 print("min % diff: {0:.2f}, hour_min: {1}, total_min: {2}".format(
 	percent_diff(hour_min, total_min), hour_min, total_min))
@@ -107,6 +106,8 @@ print("range % diff: {0:.2f}, hour_range: {1}, total_range: {2}".format(
 	percent_diff(hour_range, total_range), hour_range, total_range))
 print("mean % diff: {0:.2f}, hour_mean: {1}, total_mean: {2}".format(
 	percent_diff(hour_mean, total_mean), hour_mean, total_mean))
+print("median % diff: {0:.2f}, hour_median: {1}, total_median: {2}".format(
+	percent_diff(hour_median, total_median), hour_median, total_median))
 print("")
 print("----------------------------------")
 print("")
